@@ -21,7 +21,7 @@ class UnresolvedResourceTypeInspection : LocalInspectionTool() {
             if (!AemXmlUtil.isResourceType(attribute)) return
             val value = attribute.value ?: return
             if (AemPlatformResourceType.isExternal(value)) return
-            if (ResourceTypeResolver.getInstance(attribute.project).resolve(value) == null) {
+            if (ResourceTypeResolver.getInstance(attribute.project).resolveDirectory(value) == null) {
                 holder.registerProblem(
                     attribute.valueElement ?: attribute,
                     "Cannot resolve AEM component '$value'",

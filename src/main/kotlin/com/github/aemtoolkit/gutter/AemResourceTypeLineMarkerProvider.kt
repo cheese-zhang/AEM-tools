@@ -28,7 +28,7 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
         val value = element as? XmlAttributeValue ?: return null
         val attribute = AemXmlUtil.containingAttribute(value) ?: return null
         if (!AemXmlUtil.isResourceType(attribute)) return null
-        if (ResourceTypeResolver.getInstance(element.project).resolve(value.value) == null) {
+        if (ResourceTypeResolver.getInstance(element.project).resolveDirectory(value.value) == null) {
             return null
         }
 
@@ -44,14 +44,23 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
     }
 
     private fun showActions(event: MouseEvent, value: XmlAttributeValue) {
-        val component = ResourceTypeResolver.getInstance(value.project).resolve(value.value)
-            ?: return
+        val resolver = ResourceTypeResolver.getInstance(value.project)
+        val component = resolver.resolve(value.value)
+        val resourceDirectory = resolver.resolveDirectory(value.value) ?: return
         val group = DefaultActionGroup().apply {
-            add(OpenArtifactAction("Open Component", component.directory, value))
-            add(OpenArtifactAction("Open Dialog", component.dialog, value))
-            add(OpenArtifactAction("Open HTL", component.htl, value))
-            add(OpenArtifactAction("Open Sling Model", component.slingModel, value))
-            add(OpenArtifactAction("Open Clientlib", component.clientlibs.firstOrNull(), value))
+            add(
+                OpenArtifactAction(
+                    if (component == null) "Open Resource" else "Open Component",
+                    resourceDirectory,
+                    value,
+                ),
+            )
+            if (component != null) {
+                add(OpenArtifactAction("Open Dialog", component.dialog, value))
+                add(OpenArtifactAction("Open HTL", component.htl, value))
+                add(OpenArtifactAction("Open Sling Model", component.slingModel, value))
+                add(OpenArtifactAction("Open Clientlib", component.clientlibs.firstOrNull(), value))
+            }
         }
         val dataContext = DataManager.getInstance().getDataContext(event.component)
         JBPopupFactory.getInstance()
@@ -81,7 +90,10 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
             } else {
                 target
             }
-            if (!navigable.isDirectory) {
+            if (navigable.isDirectory) {
+                com.intellij.ide.projectView.ProjectView.getInstance(context.project)
+                    .select(null, navigable, true)
+            } else {
                 FileEditorManager.getInstance(context.project).openFile(navigable, true)
             }
         }

@@ -28,6 +28,14 @@ class AemDocumentationProvider : AbstractDocumentationProvider() {
 
         val component = ResourceTypeResolver.getInstance(value.project).resolve(value.value)
         if (component == null) {
+            val localDirectory = ResourceTypeResolver.getInstance(value.project)
+                .resolveDirectory(value.value)
+            if (localDirectory != null) {
+                return "<div class='definition'><b>${StringUtil.escapeXmlEntities(value.value)}</b></div>" +
+                    "<div class='content'><p>AEM script resource</p>" +
+                    "<p><b>Local path:</b> " +
+                    "${StringUtil.escapeXmlEntities(localDirectory.path)}</p></div>"
+            }
             val repositoryPath = AemPlatformResourceType.repositoryPath(value.value) ?: return null
             return "<div class='definition'><b>${StringUtil.escapeXmlEntities(value.value)}</b></div>" +
                 "<div class='content'><p>AEM platform component</p>" +

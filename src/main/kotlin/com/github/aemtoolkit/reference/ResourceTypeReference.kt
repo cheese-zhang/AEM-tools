@@ -18,9 +18,10 @@ class ResourceTypeReference(element: XmlAttributeValue) :
         false,
     ) {
     override fun resolve(): PsiDirectory? {
-        val component = ResourceTypeResolver.getInstance(element.project).resolve(element.value)
+        val directory = ResourceTypeResolver.getInstance(element.project)
+            .resolveDirectory(element.value)
             ?: return null
-        return PsiManager.getInstance(element.project).findDirectory(component.directory)
+        return PsiManager.getInstance(element.project).findDirectory(directory)
     }
 
     override fun isSoft(): Boolean =

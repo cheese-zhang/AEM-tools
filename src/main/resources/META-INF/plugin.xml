@@ -169,6 +169,8 @@
         <codeInsight.lineMarkerProvider
                 language="JAVA"
                 implementationClass="com.github.aemtoolkit.gutter.HtlJavaGetterLineMarkerProvider"/>
+        <gotoDeclarationHandler
+                implementation="com.github.aemtoolkit.reference.HtlJavaGetterGotoDeclarationHandler"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.github.aemtoolkit">
