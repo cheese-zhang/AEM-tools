@@ -16,7 +16,7 @@ class AemToolkitPanelTest : BasePlatformTestCase() {
             Disposer.register(testRootDisposable, panel)
         }
 
-        val tabs = findComponent<JTabbedPane>(panel)!!
+        val tabs = findComponent(panel, JTabbedPane::class.java)!!
         assertEquals("Content", tabs.getTitleAt(0))
         assertEquals("Content", (tabs.getTabComponentAt(0) as JBLabel).text)
         assertEquals(0, tabs.selectedIndex)
@@ -29,24 +29,24 @@ class AemToolkitPanelTest : BasePlatformTestCase() {
             Disposer.register(testRootDisposable, panel)
         }
 
-        val hint = findComponents<JPanel>(panel)
+        val hint = findComponents(panel, JPanel::class.java)
             .single { it.name == AemToolkitPanel.SETUP_HINT_NAME }
 
         assertTrue(hint.isVisible)
         assertTrue(
-            findComponents<JBLabel>(hint)
+            findComponents(hint, JBLabel::class.java)
                 .any { it.text.contains("Configure AEM Author") },
         )
     }
 
-    private inline fun <reified T> findComponent(container: Container): T? =
-        findComponents<T>(container).firstOrNull()
+    private fun <T> findComponent(container: Container, type: Class<T>): T? =
+        findComponents(container, type).firstOrNull()
 
-    private inline fun <reified T> findComponents(container: Container): List<T> =
+    private fun <T> findComponents(container: Container, type: Class<T>): List<T> =
         buildList {
             container.components.forEach { component ->
-                if (component is T) add(component)
-                if (component is Container) addAll(findComponents<T>(component))
+                if (type.isInstance(component)) add(type.cast(component))
+                if (component is Container) addAll(findComponents(component, type))
             }
         }
 }

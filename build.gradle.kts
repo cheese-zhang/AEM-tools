@@ -39,7 +39,9 @@ intellijPlatform {
         }
 
         vendor {
-            name = "AEM Toolkit"
+            name = "cheese-zhang"
+            email = "18023108+cheese-zhang@users.noreply.github.com"
+            url = "https://github.com/cheese-zhang"
         }
     }
 
