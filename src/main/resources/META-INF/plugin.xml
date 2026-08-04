@@ -1,10 +1,16 @@
 <idea-plugin>
     <id>com.github.aemtoolkit</id>
     <name>AEM Toolkit</name>
-    <vendor>AEM Toolkit</vendor>
+    <vendor
+            email="18023108+cheese-zhang@users.noreply.github.com"
+            url="https://github.com/cheese-zhang">cheese-zhang</vendor>
 
     <description><![CDATA[
         Development assistance for Adobe Experience Manager projects.
+        <p>
+            Source code and documentation:
+            <a href="https://github.com/cheese-zhang/AEM-tools">github.com/cheese-zhang/AEM-tools</a>
+        </p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>

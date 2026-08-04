@@ -121,7 +121,13 @@ the XML PSI API. Production code is under
 
 ## Current version
 
-`0.7.6`
+`0.7.7`
+
+## Author
+
+Created by [cheese-zhang](https://github.com/cheese-zhang). Source code and issue
+tracking are available at
+[cheese-zhang/AEM-tools](https://github.com/cheese-zhang/AEM-tools).
 
 ## Notes
 

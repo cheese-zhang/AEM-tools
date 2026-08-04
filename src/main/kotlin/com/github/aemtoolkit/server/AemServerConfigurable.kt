@@ -1,7 +1,11 @@
 package com.github.aemtoolkit.server
 
+import com.github.aemtoolkit.util.AemPluginInfo
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import com.intellij.ui.TitledSeparator
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPasswordField
@@ -44,6 +48,30 @@ class AemServerConfigurable(project: Project) : Configurable {
             addRow(form, constraints, "Username:", username)
             addRow(form, constraints, "Password:", password)
             addRow(form, constraints, "Remote debug port:", debugPort)
+            constraints.gridy++
+            constraints.gridx = 0
+            constraints.gridwidth = 2
+            constraints.weightx = 1.0
+            form.add(TitledSeparator("About"), constraints)
+            constraints.gridy++
+            form.add(
+                JBLabel("AEM Toolkit by ${AemPluginInfo.AUTHOR}"),
+                constraints,
+            )
+            constraints.gridy++
+            form.add(
+                ActionLink("Open author profile") {
+                    BrowserUtil.browse(AemPluginInfo.AUTHOR_URL)
+                },
+                constraints,
+            )
+            constraints.gridy++
+            form.add(
+                ActionLink("Open project on GitHub") {
+                    BrowserUtil.browse(AemPluginInfo.PROJECT_URL)
+                },
+                constraints,
+            )
             constraints.gridy++
             constraints.weighty = 1.0
             form.add(JPanel(), constraints)
