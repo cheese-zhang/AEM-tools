@@ -1,6 +1,11 @@
 # Gradle
 .gradle/
+.kotlin/
 build/
+*.class
+*.log
+hs_err_pid*
+replay_pid*
 
 # IntelliJ Platform plugin development
 .intellijPlatform/
