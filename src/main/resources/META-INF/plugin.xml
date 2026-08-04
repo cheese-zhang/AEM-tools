@@ -1,0 +1,226 @@
+<idea-plugin>
+    <id>com.github.aemtoolkit</id>
+    <name>AEM Toolkit</name>
+    <vendor>AEM Toolkit</vendor>
+
+    <description><![CDATA[
+        Development assistance for Adobe Experience Manager projects.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.xml</depends>
+    <depends>com.intellij.java</depends>
+
+    <extensionPoints>
+        <extensionPoint
+                name="componentProvider"
+                interface="com.github.aemtoolkit.resolver.AemComponentProvider"
+                dynamic="true"/>
+        <extensionPoint
+                name="authorStatusProvider"
+                interface="com.github.aemtoolkit.resolver.AemAuthorStatusProvider"
+                dynamic="true"/>
+        <extensionPoint
+                name="jcrSchemaProvider"
+                interface="com.github.aemtoolkit.resolver.JcrSchemaProvider"
+                dynamic="true"/>
+    </extensionPoints>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="com.github.aemtoolkit.resolver.ResourceTypeResolver"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.resolver.AemArtifactResolver"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.resolver.AemAuthorService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.resolver.JcrSchemaService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerSettings"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerConnectionService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.server.AemBundleService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.server.AemPackageService"/>
+        <notificationGroup id="AEM Toolkit" displayType="BALLOON"/>
+        <projectConfigurable
+                id="com.github.aemtoolkit.server"
+                displayName="AEM Toolkit"
+                instance="com.github.aemtoolkit.server.AemServerConfigurable"/>
+        <treeStructureProvider
+                implementation="com.github.aemtoolkit.projectview.AemProjectTreeStructureProvider"/>
+        <scopeDescriptorProvider
+                implementation="com.github.aemtoolkit.search.AemScopeDescriptorProvider"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.ResourceTypeReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.JcrPropertyReferenceContributor"/>
+        <psi.referenceContributor
+                language="HTML"
+                implementation="com.github.aemtoolkit.reference.HtlReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.HtlReferenceContributor"/>
+        <completion.contributor
+                language="XML"
+                implementationClass="com.github.aemtoolkit.completion.ResourceTypeCompletionContributor"/>
+        <completion.contributor
+                language="HTML"
+                implementationClass="com.github.aemtoolkit.completion.HtlCompletionContributor"/>
+        <completion.contributor
+                language="TEXT"
+                implementationClass="com.github.aemtoolkit.completion.AemConfigCompletionContributor"/>
+        <completion.contributor
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.completion.AemConfigCompletionContributor"/>
+        <lang.documentationProvider
+                language="XML"
+                implementationClass="com.github.aemtoolkit.reference.AemDocumentationProvider"/>
+        <lang.documentationProvider
+                language="HTML"
+                implementationClass="com.github.aemtoolkit.reference.HtlDocumentationProvider"/>
+        <intentionAction>
+            <language>HTML</language>
+            <className>com.github.aemtoolkit.intention.ConvertAttributeToHtlExpressionIntention</className>
+        </intentionAction>
+        <intentionAction>
+            <language>HTML</language>
+            <className>com.github.aemtoolkit.intention.ExpandHtlExpressionIntention</className>
+        </intentionAction>
+        <localInspection
+                language="XML"
+                displayName="Unresolved AEM resource type"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.github.aemtoolkit.inspection.UnresolvedResourceTypeInspection"/>
+        <localInspection
+                language="XML"
+                displayName="AEM content structure"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.github.aemtoolkit.inspection.AemContentInspection"/>
+        <localInspection
+                language="XML"
+                displayName="FileVault filter validation"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.github.aemtoolkit.inspection.AemFilterInspection"/>
+        <localInspection
+                language="HTML"
+                displayName="HTL validation"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.github.aemtoolkit.inspection.HtlInspection"/>
+        <localInspection
+                language="JAVA"
+                displayName="Sling Model validation"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.github.aemtoolkit.inspection.SlingModelInspection"/>
+        <localInspection
+                language="TEXT"
+                displayName="AEM configuration validation"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.github.aemtoolkit.inspection.AemConfigInspection"/>
+        <localInspection
+                language="AEM_CONFIG"
+                shortName="AemConfigLanguageValidation"
+                displayName="AEM configuration validation"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.github.aemtoolkit.inspection.AemConfigInspection"/>
+        <fileType
+                name="AEM Configuration"
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.AemConfigFileType"
+                extensions="cnd;any;farm"/>
+        <lang.parserDefinition
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.AemConfigParserDefinition"/>
+        <syntaxHighlighterFactory
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.AemConfigSyntaxHighlighterFactory"/>
+        <lang.commenter
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.AemConfigCommenter"/>
+        <lang.braceMatcher
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.AemConfigBraceMatcher"/>
+        <lang.findUsagesProvider
+                language="AEM_CONFIG"
+                implementationClass="com.github.aemtoolkit.config.CndFindUsagesProvider"/>
+        <toolWindow
+                id="AEM Toolkit"
+                anchor="left"
+                icon="/icons/aemToolWindow.svg"
+                factoryClass="com.github.aemtoolkit.toolwindow.AemExplorerToolWindowFactory"/>
+        <codeInsight.lineMarkerProvider
+                language="XML"
+                implementationClass="com.github.aemtoolkit.gutter.AemResourceTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.github.aemtoolkit.gutter.HtlJavaGetterLineMarkerProvider"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.github.aemtoolkit">
+        <componentProvider implementation="com.github.aemtoolkit.resolver.IndexedComponentProvider"/>
+        <jcrSchemaProvider implementation="com.github.aemtoolkit.resolver.BuiltInJcrSchemaProvider"/>
+        <jcrSchemaProvider implementation="com.github.aemtoolkit.resolver.IndexedJcrSchemaProvider"/>
+        <authorStatusProvider implementation="com.github.aemtoolkit.server.ConfiguredAemAuthorStatusProvider"/>
+    </extensions>
+
+    <actions>
+        <group id="com.github.aemtoolkit.tools" text="AEM Toolkit" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action
+                    id="com.github.aemtoolkit.showToolWindow"
+                    class="com.github.aemtoolkit.toolwindow.ShowAemToolkitAction"
+                    text="Open AEM Toolkit"/>
+            <action
+                    id="com.github.aemtoolkit.showSettings"
+                    class="com.github.aemtoolkit.server.ShowAemSettingsAction"
+                    text="AEM Settings..."/>
+            <action
+                    id="com.github.aemtoolkit.createDebugConfiguration"
+                    class="com.github.aemtoolkit.server.CreateAemDebugConfigurationAction"
+                    text="Create Remote Debug Configuration"/>
+        </group>
+        <group id="com.github.aemtoolkit.openIn" text="AEM" popup="true">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <action
+                    id="com.github.aemtoolkit.openInCrxde"
+                    class="com.github.aemtoolkit.server.OpenInCrxdeAction"
+                    text="Open in CRXDE Lite"/>
+            <action
+                    id="com.github.aemtoolkit.openWebConsole"
+                    class="com.github.aemtoolkit.server.OpenWebConsoleAction"
+                    text="Open AEM Web Console"/>
+            <action
+                    id="com.github.aemtoolkit.openPackageManager"
+                    class="com.github.aemtoolkit.server.OpenPackageManagerAction"
+                    text="Open AEM Package Manager"/>
+            <separator/>
+            <action
+                    id="com.github.aemtoolkit.downloadContent"
+                    class="com.github.aemtoolkit.server.DownloadAemContentAction"
+                    text="Download from AEM"/>
+            <action
+                    id="com.github.aemtoolkit.uploadContent"
+                    class="com.github.aemtoolkit.server.UploadAemContentAction"
+                    text="Upload to AEM"/>
+            <separator/>
+            <action
+                    id="com.github.aemtoolkit.uploadPackage"
+                    class="com.github.aemtoolkit.server.UploadAemPackageAction"
+                    text="Upload and Install AEM Package..."/>
+            <action
+                    id="com.github.aemtoolkit.pullContent"
+                    class="com.github.aemtoolkit.server.PullAemContentAction"
+                    text="Pull AEM Content as Package..."/>
+        </group>
+    </actions>
+</idea-plugin>

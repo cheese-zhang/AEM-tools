@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+
+# IntelliJ Platform plugin development
+.intellijPlatform/
+.idea/
+*.iml
+out/
+
+# Local environment
+.env
+.env.*
+local.properties
+*.hprof
+
+# Operating systems
+.DS_Store
+Thumbs.db
