@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aemtoolkit"
-version = "0.7.8"
+version = "0.7.9"
 
 repositories {
     mavenCentral()
@@ -39,7 +39,7 @@ intellijPlatform {
         }
 
         vendor {
-            name = "cheese-zhang"
+            name = "Cheese"
             email = "18023108+cheese-zhang@users.noreply.github.com"
             url = "https://github.com/cheese-zhang"
         }

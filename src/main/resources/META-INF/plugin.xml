@@ -3,15 +3,33 @@
     <name>AEM Toolkit</name>
     <vendor
             email="18023108+cheese-zhang@users.noreply.github.com"
-            url="https://github.com/cheese-zhang">cheese-zhang</vendor>
+            url="https://github.com/cheese-zhang">Cheese</vendor>
 
     <description><![CDATA[
-        Development assistance for Adobe Experience Manager projects.
         <p>
-            Source code and documentation:
-            <a href="https://github.com/cheese-zhang/AEM-tools">github.com/cheese-zhang/AEM-tools</a>
+            AEM Toolkit brings Adobe Experience Manager development workflows
+            directly into IntelliJ IDEA.
         </p>
+        <ul>
+            <li>Navigate and complete resource types, templates, policies, dialogs, HTL, and Sling Models.</li>
+            <li>Inspect AEM XML, HTL, FileVault filters, Dispatcher configuration, and Sling Models.</li>
+            <li>Explore content trees and Granite UI dialogs with structure and visual previews.</li>
+            <li>Manage AEM Author content, packages, OSGi bundles, and remote debugging.</li>
+            <li>Synchronize files and JCR node definitions from the IDE.</li>
+        </ul>
     ]]></description>
+
+    <change-notes><![CDATA[
+        <h3>New Features</h3>
+        <ul>
+            <li>Expanded plugin overview with a clear summary of AEM Toolkit capabilities.</li>
+            <li>Added structured New Features notes for every published update.</li>
+        </ul>
+        <h3>Improvements</h3>
+        <ul>
+            <li>Plugin author is now displayed as Cheese.</li>
+        </ul>
+    ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.xml</depends>
