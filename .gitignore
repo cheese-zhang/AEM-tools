@@ -18,6 +18,9 @@ out/
 .env.*
 local.properties
 *.hprof
+*.pem
+*.key
+*.crt
 
 # Operating systems
 .DS_Store

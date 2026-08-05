@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/cheese-zhang/AEM-tools">
     <id>com.github.aemtoolkit</id>
     <name>AEM Toolkit</name>
     <vendor
@@ -9,6 +9,9 @@
         <p>
             AEM Toolkit brings Adobe Experience Manager development workflows
             directly into IntelliJ IDEA.
+        </p>
+        <p>
+            Independent community project. Not affiliated with or endorsed by Adobe.
         </p>
         <ul>
             <li>Navigate and complete resource types, templates, policies, dialogs, HTL, and Sling Models.</li>
@@ -23,8 +26,8 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Complete getters for any Java-backed data-sly-use variable.</li>
-            <li>Correctly filter candidates from the property prefix after the dot.</li>
+            <li>Add JetBrains Marketplace branding, licensing, and privacy documentation.</li>
+            <li>Support signed builds and automated Marketplace publishing.</li>
         </ul>
     ]]></change-notes>
 

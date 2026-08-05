@@ -1,0 +1,42 @@
+name: Build and verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Test and verify plugin
+        run: >-
+          ./gradlew --no-daemon
+          test
+          verifyPluginProjectConfiguration
+          verifyPluginStructure
+          verifyPlugin
+          buildPlugin
+
+      - name: Upload plugin ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: aem-toolkit
+          path: build/distributions/*.zip
+          if-no-files-found: error

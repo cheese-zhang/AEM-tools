@@ -2,6 +2,15 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.9.3
+
+### New Features
+
+- Added JetBrains Marketplace-ready plugin icons and homepage metadata.
+- Added Apache 2.0 licensing and a privacy policy for local and AEM-connected
+  workflows.
+- Added CI workflow for tests, plugin structure checks, and compatibility verification.
+
 ## 0.9.2
 
 ### New Features

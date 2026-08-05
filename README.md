@@ -4,6 +4,9 @@ AEM Toolkit is an IntelliJ IDEA plugin for Adobe Experience Manager development.
 It adds navigation, completion, inspections, previews, repository tools, and AEM
 Author integration for FileVault projects.
 
+AEM Toolkit is an independent community project and is not affiliated with or
+endorsed by Adobe.
+
 ## Requirements
 
 - IntelliJ IDEA 2025.1 or newer
@@ -132,12 +135,18 @@ the XML PSI API. Production code is under
 
 ## Current version
 
-`0.8.2`
+`0.9.3`
 
 ## Author
 
 Created by **Cheese**. Source code and issue tracking are available at
 [cheese-zhang/AEM-tools](https://github.com/cheese-zhang/AEM-tools).
+
+## License and privacy
+
+AEM Toolkit is available under the
+[Apache License 2.0](LICENSE). See the [Privacy Policy](PRIVACY.md) for details
+about local processing, AEM connections, and credential storage.
 
 ## Notes
 
@@ -147,3 +156,5 @@ Created by **Cheese**. Source code and issue tracking are available at
   sources that exist only in remote packages are not indexed locally.
 - Direct server operations require suitable repository, Package Manager, or
   Web Console permissions.
+- Adobe and Adobe Experience Manager are trademarks or registered trademarks
+  of Adobe in the United States and/or other countries.

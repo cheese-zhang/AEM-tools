@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aemtoolkit"
-version = "0.9.2"
+version = "0.9.3"
 
 repositories {
     mavenCentral()
@@ -17,6 +17,7 @@ dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2025.1")
         bundledPlugin("com.intellij.java")
+        pluginVerifier()
         testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
     }
 
@@ -50,6 +51,7 @@ intellijPlatform {
             recommended()
         }
     }
+
 }
 
 tasks {
