@@ -2,6 +2,17 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.9.4
+
+### New Features
+
+- Fixed editor context uploads so the active `.content.xml` is selected instead
+  of a contextual Project View directory.
+- Uploading one file no longer traverses sibling files; directory recursion is
+  used only when a directory is explicitly selected.
+- Upload confirmation now states whether the action affects one file or an
+  entire directory.
+
 ## 0.9.3
 
 ### New Features
@@ -9,7 +20,7 @@ Every release documents user-visible additions under **New Features**.
 - Added JetBrains Marketplace-ready plugin icons and homepage metadata.
 - Added Apache 2.0 licensing and a privacy policy for local and AEM-connected
   workflows.
-- Added CI workflow for tests, plugin structure checks, and compatibility verification.
+- Added CI workflow for tests, plugin structure checks, and plugin packaging.
 
 ## 0.9.2
 

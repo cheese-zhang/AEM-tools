@@ -26,8 +26,9 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Add JetBrains Marketplace branding, licensing, and privacy documentation.</li>
-            <li>Support signed builds and automated Marketplace publishing.</li>
+            <li>Upload only the active .content.xml when invoked from the editor context menu.</li>
+            <li>Reserve recursive uploads for directories explicitly selected in Project View.</li>
+            <li>Show the exact upload scope before changing AEM content.</li>
         </ul>
     ]]></change-notes>
 

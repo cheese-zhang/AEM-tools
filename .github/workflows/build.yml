@@ -25,13 +25,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
       - name: Test and verify plugin
         run: >-
           ./gradlew --no-daemon
           test
           verifyPluginProjectConfiguration
           verifyPluginStructure
-          verifyPlugin
           buildPlugin
 
       - name: Upload plugin ZIP

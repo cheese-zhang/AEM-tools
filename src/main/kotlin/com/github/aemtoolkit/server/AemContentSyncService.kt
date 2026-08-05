@@ -34,9 +34,15 @@ class AemContentSyncService(private val project: Project) {
 
     /** Uploads [file] directly to its matching repository path. */
     @Throws(IOException::class)
-    fun upload(file: VirtualFile, indicator: ProgressIndicator): Int {
-        val selection = selection(file)
-        if (Files.isRegularFile(selection.source)) {
+    fun upload(file: VirtualFile, indicator: ProgressIndicator): Int =
+        upload(selection(file), indicator)
+
+    @Throws(IOException::class)
+    internal fun upload(
+        selection: AemContentSelection,
+        indicator: ProgressIndicator,
+    ): Int {
+        if (!selection.directory) {
             uploadFile(selection.source, selection.repositoryPath, indicator)
             return 1
         }
@@ -61,7 +67,7 @@ class AemContentSyncService(private val project: Project) {
     @Throws(IOException::class)
     fun download(file: VirtualFile, indicator: ProgressIndicator): Int {
         val selection = selection(file)
-        val downloaded = if (Files.isDirectory(selection.source)) {
+        val downloaded = if (selection.directory) {
             downloadDirectory(selection, indicator)
         } else {
             get(selection.repositoryPath, selection.source, indicator)
@@ -84,7 +90,7 @@ class AemContentSyncService(private val project: Project) {
         val jcrRoot = generateSequence(source) { it.parent }
             .firstOrNull { it.fileName?.toString() == "jcr_root" }
             ?: throw IllegalArgumentException("The selected resource must be below jcr_root")
-        return AemContentSelection(source, jcrRoot, repositoryPath)
+        return AemContentSelection(source, jcrRoot, repositoryPath, file.isDirectory)
     }
 
     private fun put(source: Path, repositoryPath: String, indicator: ProgressIndicator) {
@@ -322,6 +328,7 @@ data class AemContentSelection(
     val source: Path,
     val jcrRoot: Path,
     val repositoryPath: String,
+    val directory: Boolean,
 )
 
 /** A resource returned by a WebDAV directory listing. */

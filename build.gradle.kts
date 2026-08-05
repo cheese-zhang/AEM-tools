@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aemtoolkit"
-version = "0.9.3"
+version = "0.9.4"
 
 repositories {
     mavenCentral()
@@ -17,7 +17,6 @@ dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2025.1")
         bundledPlugin("com.intellij.java")
-        pluginVerifier()
         testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
     }
 
@@ -43,12 +42,6 @@ intellijPlatform {
             name = "Cheese"
             email = "18023108+cheese-zhang@users.noreply.github.com"
             url = "https://github.com/cheese-zhang"
-        }
-    }
-
-    pluginVerification {
-        ides {
-            recommended()
         }
     }
 

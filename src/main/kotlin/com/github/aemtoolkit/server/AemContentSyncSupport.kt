@@ -3,7 +3,6 @@ package com.github.aemtoolkit.server
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
@@ -16,7 +15,7 @@ object AemContentSyncSupport {
     /** Updates action visibility for a selected FileVault resource. */
     fun update(event: AnActionEvent) {
         val project = event.project
-        val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
+        val file = AemContentActionSelection.selectedFile(event)
         event.presentation.isEnabledAndVisible =
             project != null &&
                 file != null &&
@@ -47,16 +46,33 @@ object AemContentSyncSupport {
         val selection = AemContentSyncService.getInstance(project).selectionOrNull(file) ?: return
         val answer = Messages.showYesNoDialog(
             project,
-            "Upload '${selection.repositoryPath}' and install it on the configured AEM server?",
-            "Upload to AEM",
+            uploadPrompt(selection, file),
+            "Upload content to AEM?",
+            "Upload",
+            "Cancel",
             Messages.getWarningIcon(),
         )
         if (answer != Messages.YES) return
 
         run(project, "Uploading AEM Content", "AEM content uploaded") { indicator ->
-            val count = AemContentSyncService.getInstance(project).upload(file, indicator)
+            val count = AemContentSyncService.getInstance(project).upload(selection, indicator)
             "$count file(s) uploaded"
         }
+    }
+
+    internal fun uploadPrompt(
+        selection: AemContentSelection,
+        file: VirtualFile,
+    ): String = when {
+        selection.directory ->
+            "Upload '${selection.repositoryPath}' and every file in this directory to AEM?"
+        file.name == ".content.xml" ->
+            "Apply only the node definitions in '.content.xml' to " +
+                "'${selection.repositoryPath.removeSuffix("/.content.xml")}'? " +
+                "Sibling files will not be uploaded."
+        else ->
+            "Upload only '${file.name}' to '${selection.repositoryPath}'? " +
+                "Sibling files will not be uploaded."
     }
 
     private fun run(

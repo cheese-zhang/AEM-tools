@@ -135,7 +135,7 @@ the XML PSI API. Production code is under
 
 ## Current version
 
-`0.9.3`
+`0.9.4`
 
 ## Author
 
