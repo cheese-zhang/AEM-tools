@@ -2,6 +2,22 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.9.0
+
+### New Features
+
+- Added Apache Sling Context-Aware Configuration indexing for Java annotation
+  definitions, configuration resources, and `sling:configRef` contexts.
+- Added CAConfig completion, Ctrl+Click navigation, property validation, type
+  checks, collection metadata, and effective fallback lookup.
+- Added ACS AEM Commons Generic List discovery, completion, navigation, and
+  unresolved datasource inspection.
+- Added Named Image Transform discovery and transform-pipeline validation for
+  XML and modern `.cfg.json` factory configurations.
+- Added Redirect Manager rule indexing and validation.
+- Added Shared Component Properties discovery for global and component-specific
+  resources.
+
 ## 0.8.2
 
 ### New Features

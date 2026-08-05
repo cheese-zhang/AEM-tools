@@ -24,6 +24,17 @@ Author integration for FileVault projects.
   unresolved errors. If matching `jcr_root/libs` source is present locally,
   navigation opens the real source directory.
 
+### Sling CAConfig and ACS AEM Commons
+
+- Indexes Apache Sling `@Configuration` definitions, properties,
+  `/conf/**/sling:configs` resources, and `sling:configRef` contexts.
+- Provides CAConfig property completion, Java/XML navigation, type validation,
+  fallback lookup, and inheritance metadata awareness.
+- Resolves ACS Generic Lists from Touch UI datasources and Classic UI options.
+- Indexes and validates Named Image Transform factory configurations.
+- Validates Redirect Manager rules and indexes shared/global component-property
+  resources.
+
 ### HTL and Sling Models
 
 - HTL expression completion, validation, documentation, and references.

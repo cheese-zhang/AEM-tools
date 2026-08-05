@@ -16,14 +16,17 @@
             <li>Explore content trees and Granite UI dialogs with structure and visual previews.</li>
             <li>Manage AEM Author content, packages, OSGi bundles, and remote debugging.</li>
             <li>Synchronize files and JCR node definitions from the IDE.</li>
+            <li>Develop Sling CAConfig and ACS AEM Commons integrations with navigation, completion, and inspections.</li>
         </ul>
     ]]></description>
 
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Display dialog XML attributes directly as property nodes in Dialog Structure.</li>
-            <li>Expose parameters for plain nodes without a sling:resourceType, including names, labels, types, and lockable paths.</li>
+            <li>Index Sling CAConfig Java definitions, configuration resources, and sling:configRef contexts.</li>
+            <li>Navigate and complete CAConfig properties with unknown-property and type inspections.</li>
+            <li>Resolve ACS Generic Lists and validate their datasource paths.</li>
+            <li>Index Named Image Transforms, Redirect Manager rules, and Shared Component Properties.</li>
         </ul>
     ]]></change-notes>
 
@@ -51,6 +54,8 @@
         <projectService serviceImplementation="com.github.aemtoolkit.resolver.AemArtifactResolver"/>
         <projectService serviceImplementation="com.github.aemtoolkit.resolver.AemAuthorService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.resolver.JcrSchemaService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.caconfig.CaConfigService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.acs.AcsCommonsService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerSettings"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerConnectionService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemBundleService"/>
@@ -70,6 +75,12 @@
         <psi.referenceContributor
                 language="XML"
                 implementation="com.github.aemtoolkit.reference.JcrPropertyReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.CaConfigReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.AcsCommonsReferenceContributor"/>
         <psi.referenceContributor
                 language="HTML"
                 implementation="com.github.aemtoolkit.reference.HtlReferenceContributor"/>
@@ -116,6 +127,20 @@
                 enabledByDefault="true"
                 level="WARNING"
                 implementationClass="com.github.aemtoolkit.inspection.AemContentInspection"/>
+        <localInspection
+                language="XML"
+                displayName="Sling Context-Aware Configuration"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.github.aemtoolkit.inspection.CaConfigInspection"/>
+        <localInspection
+                language="XML"
+                displayName="ACS AEM Commons"
+                groupName="AEM"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.github.aemtoolkit.inspection.AcsCommonsInspection"/>
         <localInspection
                 language="XML"
                 displayName="FileVault filter validation"
