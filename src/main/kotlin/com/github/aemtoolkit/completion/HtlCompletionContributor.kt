@@ -40,13 +40,14 @@ class HtlCompletionContributor : CompletionContributor() {
     ) {
         val position = parameters.position
         if (!HtlUtil.isHtlFile(parameters.originalFile)) return
-        val variable = HtlCompletionContext.modelVariable(
+        val modelAccess = HtlCompletionContext.modelAccess(
             parameters.originalFile.text,
             parameters.offset,
         )
-        if (variable != null) {
-            HtlJavaModelResolver.properties(position, variable).forEach { property ->
-                result.addElement(
+        if (modelAccess != null) {
+            val propertyResult = result.withPrefixMatcher(modelAccess.propertyPrefix)
+            HtlJavaModelResolver.properties(position, modelAccess.variable).forEach { property ->
+                propertyResult.addElement(
                     LookupElementBuilder.create(property.name)
                         .withTypeText(property.member.containingClass?.name, true),
                 )
@@ -92,11 +93,15 @@ class HtlCompletionContributor : CompletionContributor() {
 
 /** Extracts the active HTL expression at the completion caret. */
 internal object HtlCompletionContext {
-    fun modelVariable(text: String, offset: Int): String? =
-        Regex("""\$\{\s*([A-Za-z_]\w*)\.[A-Za-z_]*$""")
+    fun modelAccess(text: String, offset: Int): HtlModelAccess? {
+        val match = Regex("""\$\{\s*([A-Za-z_]\w*)\.([A-Za-z_]*)$""")
             .find(textBeforeCaret(text, offset))
-            ?.groupValues
-            ?.get(1)
+            ?: return null
+        return HtlModelAccess(
+            variable = match.groupValues[1],
+            propertyPrefix = match.groupValues[2],
+        )
+    }
 
     fun isInsideExpression(text: String, offset: Int): Boolean {
         val beforeCaret = textBeforeCaret(text, offset)
@@ -108,3 +113,9 @@ internal object HtlCompletionContext {
             .substringAfterLast('\n')
             .substringBefore("IntellijIdeaRulezzz")
 }
+
+/** The variable and property prefix currently being completed. */
+internal data class HtlModelAccess(
+    val variable: String,
+    val propertyPrefix: String,
+)

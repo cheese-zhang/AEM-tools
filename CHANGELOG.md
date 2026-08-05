@@ -2,6 +2,14 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.9.2
+
+### New Features
+
+- Fixed Sling Model completion for arbitrary `data-sly-use` variable names.
+- Getter candidates now use only the property text after the dot as their
+  completion prefix, so `${model.}` and `${model.ti}` display matching members.
+
 ## 0.9.1
 
 ### New Features
