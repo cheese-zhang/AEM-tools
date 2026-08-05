@@ -163,8 +163,7 @@ object AemDialogPreviewRenderer {
     private fun isTechnicalNode(node: AemDialogNode, type: String): Boolean =
         type == "hidden" ||
             node.nodeName.equals("rendercondition", ignoreCase = true) ||
-            type.contains("rendercondition", ignoreCase = true) ||
-            (type == "featureflag" && node.nodeName.contains("condition", ignoreCase = true))
+            type.contains("rendercondition", ignoreCase = true)
 
     private fun fieldRow(node: AemDialogNode, input: JComponent): JPanel =
         JPanel(GridBagLayout()).apply {

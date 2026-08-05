@@ -2,6 +2,18 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.8.1
+
+### New Features
+
+- Added generic render-condition navigation examples that can be reused by any
+  AEM project without project-specific naming.
+
+### Improvements
+
+- Removed organization-specific names and business terminology from source,
+  tests, documentation, and release metadata.
+
 ## 0.8.0
 
 ### New Features

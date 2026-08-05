@@ -22,9 +22,11 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Navigate custom Granite render-condition resource types directly to ordinary Java implementations.</li>
-            <li>Choose between repository and Java targets when both exist for a resource type.</li>
-            <li>View Java render-condition implementation details in hover documentation and gutter actions.</li>
+            <li>Use generic render-condition navigation examples across any AEM project.</li>
+        </ul>
+        <h3>Improvements</h3>
+        <ul>
+            <li>Removed organization-specific names and terminology from project metadata and examples.</li>
         </ul>
     ]]></change-notes>
 

@@ -40,9 +40,9 @@ class AemDialogPreviewRendererTest {
     @Test
     fun `caps text field row height`() {
         val field = node(
-            "company",
+            "title",
             "granite/ui/components/coral/foundation/form/textfield",
-            label = "Company",
+            label = "Title",
         )
 
         val rendered = AemDialogPreviewRenderer.render(field) as JPanel
