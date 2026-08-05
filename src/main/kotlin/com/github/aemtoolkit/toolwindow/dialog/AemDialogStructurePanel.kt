@@ -86,6 +86,14 @@ class AemDialogStructurePanel(private val project: Project) : JPanel(BorderLayou
         DefaultMutableTreeNode(
             DialogTreeItem(AemDialogPresentation.treeLabel(node, tabItem), node.sourceOffset),
         ).apply {
+            AemDialogPresentation.treeProperties(node).forEach { property ->
+                add(
+                    DefaultMutableTreeNode(
+                        DialogTreeItem(property, node.sourceOffset),
+                        false,
+                    ),
+                )
+            }
             val isTabs = node.resourceType?.substringAfterLast('/') == "tabs"
             val children = when {
                 isTabs -> AemDialogPresentation.tabItems(node)

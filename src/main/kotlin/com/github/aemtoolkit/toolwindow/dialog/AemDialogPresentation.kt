@@ -33,4 +33,8 @@ object AemDialogPresentation {
                 ?.substringAfterLast('/')
                 ?.let { append("  [").append(it).append(']') }
         }
+
+    /** Returns XML properties shown directly below a dialog structure node. */
+    fun treeProperties(node: AemDialogNode): List<String> =
+        node.attributes.entries.map { (name, value) -> "@$name = $value" }
 }

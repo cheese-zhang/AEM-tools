@@ -25,5 +25,8 @@ class AemDialogStructureParser(
             sourceOffset = node.sourceOffset,
             children = node.children.map(::mapNode),
             resourceSuperType = node.attributes["sling:resourceSuperType"],
+            attributes = node.attributes.filterKeys { attribute ->
+                attribute != "xmlns" && !attribute.startsWith("xmlns:")
+            },
         )
 }

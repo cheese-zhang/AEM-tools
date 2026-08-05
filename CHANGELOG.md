@@ -2,6 +2,15 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.8.2
+
+### New Features
+
+- Dialog Structure now displays XML attributes as property leaf nodes.
+- Nodes without `sling:resourceType`, including metadata containers and plain
+  fields, expose `jcr:primaryType`, `fieldLabel`, `name`, lockable paths, and
+  other parameters directly in the hierarchy.
+
 ## 0.8.1
 
 ### New Features

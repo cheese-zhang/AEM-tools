@@ -109,6 +109,7 @@ class AemDialogInheritanceResolver(
                 children = mergedChildren,
                 resourceSuperType = overlay.resourceSuperType,
                 inheritanceResolved = true,
+                attributes = inherited.attributes + overlay.attributes,
             )
         }
     }

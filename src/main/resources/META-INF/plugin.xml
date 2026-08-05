@@ -22,11 +22,8 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Use generic render-condition navigation examples across any AEM project.</li>
-        </ul>
-        <h3>Improvements</h3>
-        <ul>
-            <li>Removed organization-specific names and terminology from project metadata and examples.</li>
+            <li>Display dialog XML attributes directly as property nodes in Dialog Structure.</li>
+            <li>Expose parameters for plain nodes without a sling:resourceType, including names, labels, types, and lockable paths.</li>
         </ul>
     ]]></change-notes>
 

@@ -12,6 +12,7 @@ data class AemDialogNode(
     val children: List<AemDialogNode>,
     val resourceSuperType: String? = null,
     val inheritanceResolved: Boolean = true,
+    val attributes: Map<String, String> = emptyMap(),
 ) {
     /** Human-readable hierarchy label. */
     val displayName: String

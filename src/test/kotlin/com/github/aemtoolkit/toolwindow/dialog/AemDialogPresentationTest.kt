@@ -43,6 +43,32 @@ class AemDialogPresentationTest {
         )
     }
 
+    @Test
+    fun `shows node attributes as structure properties`() {
+        val link = AemDialogNode(
+            nodeName = "linkURL",
+            resourceType = null,
+            fieldName = "./mobileLogo/linkURL",
+            label = "Link to the Homepage",
+            sourceOffset = 0,
+            children = emptyList(),
+            attributes = linkedMapOf(
+                "jcr:primaryType" to "nt:unstructured",
+                "fieldLabel" to "Link to the Homepage",
+                "name" to "./mobileLogo/linkURL",
+            ),
+        )
+
+        assertEquals(
+            listOf(
+                "@jcr:primaryType = nt:unstructured",
+                "@fieldLabel = Link to the Homepage",
+                "@name = ./mobileLogo/linkURL",
+            ),
+            AemDialogPresentation.treeProperties(link),
+        )
+    }
+
     private fun node(
         name: String,
         resourceType: String? = null,
