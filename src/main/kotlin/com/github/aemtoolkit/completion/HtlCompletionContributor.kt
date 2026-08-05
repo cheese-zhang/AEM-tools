@@ -12,7 +12,6 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlAttribute
-import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
 /**
@@ -29,34 +28,46 @@ class HtlCompletionContributor : CompletionContributor() {
                     context: ProcessingContext,
                     result: CompletionResultSet,
                 ) {
-                    addHtlCompletions(parameters.position, result)
+                    addHtlCompletions(parameters, result)
                 }
             },
         )
     }
 
-    private fun addHtlCompletions(position: PsiElement, result: CompletionResultSet) {
-        if (!HtlUtil.isHtlFile(position.containingFile)) return
-        val attribute = PsiTreeUtil.getParentOfType(position, XmlAttribute::class.java, false)
-            ?: return
-        val value = attribute.valueElement
-        if (value != null && PsiTreeUtil.isAncestor(value, position, false)) {
-            val variable = modelVariable(value)
-            if (variable != null) {
-                HtlJavaModelResolver.properties(value, variable).forEach { property ->
-                    result.addElement(
-                        LookupElementBuilder.create(property.name)
-                            .withTypeText(property.member.containingClass?.name, true),
-                    )
-                }
-                return
-            }
-            HtlUtil.globalObjects.forEach { (name, description) ->
+    private fun addHtlCompletions(
+        parameters: CompletionParameters,
+        result: CompletionResultSet,
+    ) {
+        val position = parameters.position
+        if (!HtlUtil.isHtlFile(parameters.originalFile)) return
+        val variable = HtlCompletionContext.modelVariable(
+            parameters.originalFile.text,
+            parameters.offset,
+        )
+        if (variable != null) {
+            HtlJavaModelResolver.properties(position, variable).forEach { property ->
                 result.addElement(
-                    LookupElementBuilder.create(name)
-                        .withTypeText(description, true),
+                    LookupElementBuilder.create(property.name)
+                        .withTypeText(property.member.containingClass?.name, true),
                 )
             }
+            return
+        }
+
+        val attribute = PsiTreeUtil.getParentOfType(position, XmlAttribute::class.java, false)
+        if (attribute == null) {
+            if (HtlCompletionContext.isInsideExpression(
+                    parameters.originalFile.text,
+                    parameters.offset,
+                )
+            ) {
+                addGlobalObjects(result)
+            }
+            return
+        }
+        val value = attribute.valueElement
+        if (value != null && PsiTreeUtil.isAncestor(value, position, false)) {
+            addGlobalObjects(result)
             return
         }
 
@@ -68,11 +79,32 @@ class HtlCompletionContributor : CompletionContributor() {
         }
     }
 
-    private fun modelVariable(value: XmlAttributeValue): String? {
-        val beforeCaret = value.value.substringBefore("IntellijIdeaRulezzz")
-        return Regex("""\$\{\s*([A-Za-z_]\w*)\.[A-Za-z_]*$""")
-            .find(beforeCaret)
+    private fun addGlobalObjects(result: CompletionResultSet) {
+        HtlUtil.globalObjects.forEach { (name, description) ->
+            result.addElement(
+                LookupElementBuilder.create(name)
+                    .withTypeText(description, true),
+            )
+        }
+    }
+
+}
+
+/** Extracts the active HTL expression at the completion caret. */
+internal object HtlCompletionContext {
+    fun modelVariable(text: String, offset: Int): String? =
+        Regex("""\$\{\s*([A-Za-z_]\w*)\.[A-Za-z_]*$""")
+            .find(textBeforeCaret(text, offset))
             ?.groupValues
             ?.get(1)
+
+    fun isInsideExpression(text: String, offset: Int): Boolean {
+        val beforeCaret = textBeforeCaret(text, offset)
+        return beforeCaret.lastIndexOf("\${") > beforeCaret.lastIndexOf('}')
     }
+
+    private fun textBeforeCaret(text: String, offset: Int): String =
+        text.substring(0, offset.coerceIn(0, text.length))
+            .substringAfterLast('\n')
+            .substringBefore("IntellijIdeaRulezzz")
 }

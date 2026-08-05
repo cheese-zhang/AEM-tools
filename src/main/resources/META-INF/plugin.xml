@@ -23,10 +23,8 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Index Sling CAConfig Java definitions, configuration resources, and sling:configRef contexts.</li>
-            <li>Navigate and complete CAConfig properties with unknown-property and type inspections.</li>
-            <li>Resolve ACS Generic Lists and validate their datasource paths.</li>
-            <li>Index Named Image Transforms, Redirect Manager rules, and Shared Component Properties.</li>
+            <li>Complete Sling Model getter properties after expressions such as ${userProfile.}.</li>
+            <li>Support model and global-object completion in both HTL text and HTML attribute expressions.</li>
         </ul>
     ]]></change-notes>
 

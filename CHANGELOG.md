@@ -2,6 +2,14 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.9.1
+
+### New Features
+
+- Added Sling Model getter completion after model expressions such as
+  `${userProfile.}` in both HTL text and HTML attribute values.
+- Added global-object completion inside HTL text expressions.
+
 ## 0.9.0
 
 ### New Features
