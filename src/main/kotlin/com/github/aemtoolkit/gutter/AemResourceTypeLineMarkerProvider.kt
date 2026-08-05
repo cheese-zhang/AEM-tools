@@ -1,5 +1,6 @@
 package com.github.aemtoolkit.gutter
 
+import com.github.aemtoolkit.resolver.AemResourceTypeTargetResolver
 import com.github.aemtoolkit.resolver.ResourceTypeResolver
 import com.github.aemtoolkit.util.AemXmlUtil
 import com.intellij.icons.AllIcons
@@ -28,7 +29,7 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
         val value = element as? XmlAttributeValue ?: return null
         val attribute = AemXmlUtil.containingAttribute(value) ?: return null
         if (!AemXmlUtil.isResourceType(attribute)) return null
-        if (ResourceTypeResolver.getInstance(element.project).resolveDirectory(value.value) == null) {
+        if (AemResourceTypeTargetResolver.getInstance(element.project).resolve(value.value).isEmpty()) {
             return null
         }
 
@@ -46,15 +47,27 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
     private fun showActions(event: MouseEvent, value: XmlAttributeValue) {
         val resolver = ResourceTypeResolver.getInstance(value.project)
         val component = resolver.resolve(value.value)
-        val resourceDirectory = resolver.resolveDirectory(value.value) ?: return
+        val resourceDirectory = resolver.resolveDirectory(value.value)
+        val renderConditions = AemResourceTypeTargetResolver.getInstance(value.project)
+            .resolveRenderConditions(value.value)
         val group = DefaultActionGroup().apply {
-            add(
-                OpenArtifactAction(
-                    if (component == null) "Open Resource" else "Open Component",
-                    resourceDirectory,
-                    value,
-                ),
-            )
+            if (resourceDirectory != null) {
+                add(
+                    OpenArtifactAction(
+                        if (component == null) "Open Resource" else "Open Component",
+                        resourceDirectory,
+                        value,
+                    ),
+                )
+            }
+            renderConditions.forEach { renderCondition ->
+                add(
+                    OpenPsiElementAction(
+                        "Open ${renderCondition.name}",
+                        renderCondition,
+                    ),
+                )
+            }
             if (component != null) {
                 add(OpenArtifactAction("Open Dialog", component.dialog, value))
                 add(OpenArtifactAction("Open HTL", component.htl, value))
@@ -62,6 +75,7 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
                 add(OpenArtifactAction("Open Clientlib", component.clientlibs.firstOrNull(), value))
             }
         }
+
         val dataContext = DataManager.getInstance().getDataContext(event.component)
         JBPopupFactory.getInstance()
             .createActionGroupPopup(
@@ -72,6 +86,22 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
                 true,
             )
             .show(RelativePoint(event))
+    }
+
+    private class OpenPsiElementAction(
+        text: String,
+        private val target: PsiElement,
+    ) : AnAction(text) {
+        override fun actionPerformed(event: AnActionEvent) {
+            target.navigationElement
+                .takeIf(PsiElement::isValid)
+                ?.let { element ->
+                    com.intellij.pom.Navigatable::class.java
+                        .takeIf { it.isInstance(element) }
+                        ?.cast(element)
+                        ?.navigate(true)
+                }
+        }
     }
 
     private class OpenArtifactAction(

@@ -1,6 +1,7 @@
 package com.github.aemtoolkit.reference
 
 import com.github.aemtoolkit.resolver.AemPlatformResourceType
+import com.github.aemtoolkit.resolver.AemResourceTypeTargetResolver
 import com.github.aemtoolkit.resolver.JcrSchemaService
 import com.github.aemtoolkit.resolver.ResourceTypeResolver
 import com.github.aemtoolkit.util.AemXmlUtil
@@ -28,6 +29,15 @@ class AemDocumentationProvider : AbstractDocumentationProvider() {
 
         val component = ResourceTypeResolver.getInstance(value.project).resolve(value.value)
         if (component == null) {
+            val renderCondition = AemResourceTypeTargetResolver.getInstance(value.project)
+                .resolveRenderConditions(value.value)
+                .firstOrNull()
+            if (renderCondition != null) {
+                return "<div class='definition'><b>${StringUtil.escapeXmlEntities(value.value)}</b></div>" +
+                    "<div class='content'><p>Java render condition</p>" +
+                    "<p><b>Implementation:</b> " +
+                    "${StringUtil.escapeXmlEntities(renderCondition.qualifiedName.orEmpty())}</p></div>"
+            }
             val localDirectory = ResourceTypeResolver.getInstance(value.project)
                 .resolveDirectory(value.value)
             if (localDirectory != null) {

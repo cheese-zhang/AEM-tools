@@ -1,7 +1,7 @@
 package com.github.aemtoolkit.inspection
 
 import com.github.aemtoolkit.resolver.AemPlatformResourceType
-import com.github.aemtoolkit.resolver.ResourceTypeResolver
+import com.github.aemtoolkit.resolver.AemResourceTypeTargetResolver
 import com.github.aemtoolkit.util.AemXmlUtil
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -21,7 +21,7 @@ class UnresolvedResourceTypeInspection : LocalInspectionTool() {
             if (!AemXmlUtil.isResourceType(attribute)) return
             val value = attribute.value ?: return
             if (AemPlatformResourceType.isExternal(value)) return
-            if (ResourceTypeResolver.getInstance(attribute.project).resolveDirectory(value) == null) {
+            if (AemResourceTypeTargetResolver.getInstance(attribute.project).resolve(value).isEmpty()) {
                 holder.registerProblem(
                     attribute.valueElement ?: attribute,
                     "Cannot resolve AEM component '$value'",

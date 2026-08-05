@@ -2,6 +2,16 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.8.0
+
+### New Features
+
+- Added Ctrl+Click navigation from custom Granite render-condition resource
+  types to ordinary Java classes implementing `RenderCondition`.
+- Added multi-target navigation when both a repository resource and Java
+  implementation match the same resource type.
+- Added Java implementation details to hover documentation and gutter actions.
+
 ## 0.7.9
 
 ### New Features
