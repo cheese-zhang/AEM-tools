@@ -1,5 +1,6 @@
 package com.github.aemtoolkit.reference
 
+import com.github.aemtoolkit.classicui.ClassicUiWidgetRepository
 import com.github.aemtoolkit.resolver.AemPlatformResourceType
 import com.github.aemtoolkit.resolver.AemResourceTypeTargetResolver
 import com.github.aemtoolkit.resolver.JcrSchemaService
@@ -16,6 +17,8 @@ import com.intellij.psi.xml.XmlAttribute
  */
 class AemDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
+        val classicUiDoc = classicUiDocumentation(element, originalElement)
+        if (classicUiDoc != null) return classicUiDoc
         val schemaDoc = schemaDocumentation(element, originalElement)
         if (schemaDoc != null) return schemaDoc
 
@@ -38,6 +41,7 @@ class AemDocumentationProvider : AbstractDocumentationProvider() {
                     "<p><b>Implementation:</b> " +
                     "${StringUtil.escapeXmlEntities(renderCondition.qualifiedName.orEmpty())}</p></div>"
             }
+
             val localDirectory = ResourceTypeResolver.getInstance(value.project)
                 .resolveDirectory(value.value)
             if (localDirectory != null) {
@@ -64,6 +68,35 @@ class AemDocumentationProvider : AbstractDocumentationProvider() {
             append(row("Sling Model exists", component.slingModel != null))
             append("</table></div>")
         }
+    }
+
+    private fun classicUiDocumentation(
+        element: PsiElement?,
+        originalElement: PsiElement?,
+    ): String? {
+        val context = originalElement ?: element ?: return null
+        val attribute = sequenceOf(element, originalElement)
+            .filterIsInstance<XmlAttribute>()
+            .firstOrNull()
+            ?: AemXmlUtil.containingAttribute(context)
+            ?: return null
+        val xtype = if (attribute.name == "xtype") {
+            attribute.value
+        } else {
+            attribute.parent.getAttributeValue("xtype")
+        } ?: return null
+        val widget = ClassicUiWidgetRepository.find(xtype) ?: return null
+        if (attribute.name == "xtype") {
+            return "<div class='definition'><b>${StringUtil.escapeXmlEntities(xtype)}</b> " +
+                "<i>Classic UI xtype</i></div><div class='content'>" +
+                StringUtil.escapeXmlEntities(widget.description) +
+                "</div>"
+        }
+        val field = widget.fields.firstOrNull { it.name == attribute.name } ?: return null
+        return "<div class='definition'><b>${StringUtil.escapeXmlEntities(field.name)}</b> " +
+            "<i>${StringUtil.escapeXmlEntities(xtype)}</i></div><div class='content'>" +
+            StringUtil.escapeXmlEntities(field.description) +
+            "</div>"
     }
 
     private fun row(label: String, exists: Boolean): String =

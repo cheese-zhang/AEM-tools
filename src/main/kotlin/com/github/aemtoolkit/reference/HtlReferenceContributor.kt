@@ -42,40 +42,81 @@ class HtlReferenceContributor : PsiReferenceContributor() {
                         else -> return PsiReference.EMPTY_ARRAY
                     }
                     val contentOffset = if (element is XmlAttributeValue) 1 else 0
-                    val references = PROPERTY.findAll(expressionText)
-                        .map { match ->
-                            val propertyRange = match.groups[2]!!.range
-                            HtlJavaPropertyReference(
-                                element,
-                                TextRange(
-                                    propertyRange.first + contentOffset,
-                                    propertyRange.last + contentOffset + 1,
-                                ),
-                                match.groupValues[1],
-                                match.groupValues[2],
-                            )
+                    val references = EXPRESSION.findAll(expressionText)
+                        .flatMap { expression ->
+                            val body = expression.groups[1]!!
+                            PROPERTY_CHAIN.findAll(body.value).flatMap { match ->
+                            val variable = match.groupValues[1]
+                            val chain = mutableListOf<String>()
+                            SEGMENT.findAll(match.groupValues[2]).map { segment ->
+                                val propertyRange = segment.groups[1]!!.range
+                                val groupOffset =
+                                    body.range.first + match.groups[2]!!.range.first
+                                HtlJavaPropertyReference(
+                                    element,
+                                    TextRange(
+                                        groupOffset + propertyRange.first + contentOffset,
+                                        groupOffset + propertyRange.last + contentOffset + 1,
+                                    ),
+                                    variable,
+                                    segment.groupValues[1],
+                                    chain.toList(),
+                                ).also {
+                                    chain.add(segment.groupValues[1])
+                                }
+                            }
+                        }
                         }
                         .toMutableList<PsiReference>()
+                    EXPRESSION.findAll(expressionText).forEach { expression ->
+                        val body = expression.groups[1]!!
+                        IDENTIFIER.findAll(body.value).forEach { match ->
+                            val variableGroup = match.groups[1]!!
+                            val variable = variableGroup.value
+                            if (com.github.aemtoolkit.resolver.HtlJavaModelResolver
+                                    .hasDeclaration(element, variable)
+                            ) {
+                                references.add(
+                                    HtlVariableReference(
+                                        element,
+                                        TextRange(
+                                            body.range.first + variableGroup.range.first +
+                                                contentOffset,
+                                            body.range.first + variableGroup.range.last +
+                                                contentOffset + 1,
+                                        ),
+                                        variable,
+                                    ),
+                                )
+                            }
+                        }
+                    }
                     val value = element as? XmlAttributeValue
                         ?: return references.toTypedArray()
                     val attribute = value.parent as? XmlAttribute
                     if (attribute?.name?.startsWith("data-sly-use.") == true) {
-                        CLASS_NAME.find(value.value)?.let { match ->
+                        USE_CLASS.matchEntire(value.value)?.let { match ->
+                            val className = match.groupValues[1]
+                            if (className.endsWith(".html", true)) return@let
+                            val range = match.groups[1]!!.range
                             references.add(
                                 HtlUseClassReference(
                                     value,
-                                    TextRange(match.range.first + 1, match.range.last + 2),
-                                    match.value,
+                                    TextRange(range.first + 1, range.last + 2),
+                                    className,
                                 ),
                             )
                         }
-                        if (CLASS_NAME.find(value.value) == null) {
-                            FILE_PATH.find(value.value)?.let { match ->
+                        if (USE_CLASS.matchEntire(value.value)
+                                ?.groupValues?.get(1)?.endsWith(".html", true) != false
+                        ) {
+                            USE_FILE.matchEntire(value.value)?.let { match ->
+                                val range = match.groups[1]!!.range
                                 references.add(
                                     HtlFileReference(
                                         value,
-                                        TextRange(match.range.first + 1, match.range.last + 2),
-                                        match.value,
+                                        TextRange(range.first + 1, range.last + 2),
+                                        match.groupValues[1],
                                     ),
                                 )
                             }
@@ -101,9 +142,16 @@ class HtlReferenceContributor : PsiReferenceContributor() {
     }
 
     private companion object {
-        val PROPERTY = Regex("""\$\{\s*([A-Za-z_]\w*)\.([A-Za-z_]\w*)""")
-        val CLASS_NAME = Regex("""[A-Za-z_$][\w$]*(?:\.[\w$]+)+""")
-        val FILE_PATH = Regex("""(?:\./|\.\./)?[\w./-]+\.html""")
+        val EXPRESSION = Regex("""(?<!\\)\$\{([^}]*)}""")
+        val PROPERTY_CHAIN = Regex("""\b([A-Za-z_]\w*)((?:\.[A-Za-z_]\w*)+)""")
+        val SEGMENT = Regex("""\.([A-Za-z_]\w*)""")
+        val IDENTIFIER = Regex("""(?<![.\w])([A-Za-z_]\w*)""")
+        val USE_CLASS = Regex(
+            """(?:\$\{\s*['"])?([A-Za-z_$][\w$]*(?:\.[\w$]+)+)(?:['"]\s*})?""",
+        )
+        val USE_FILE = Regex(
+            """(?:\$\{\s*['"])?((?:/|\./|\.\./)?[\w./-]+\.html)(?:['"]\s*})?""",
+        )
         val TEMPLATE_CALL = Regex("""\$\{\s*([A-Za-z_]\w*)\s*(?:@|})""")
     }
 }

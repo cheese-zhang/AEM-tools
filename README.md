@@ -41,9 +41,23 @@ endorsed by Adobe.
 ### HTL and Sling Models
 
 - HTL expression completion, validation, documentation, and references.
+- Completes Java Use classes, Sling Models, project HTL templates, ClientLib
+  templates, ClientLib categories, and FileVault i18n keys.
+- Resolves chained Java properties, arrays, and iterable element types.
 - Navigation from HTL model properties to Java getters.
 - Reverse gutter navigation from Java getters to HTL usages.
+- Safe rename propagation for Java getters and `data-sly-use` variables.
 - Local template and file references plus HTL intention actions.
+
+### Client libraries, OSGi, and Classic UI
+
+- Indexes ClientLib categories, dependencies, and embeds.
+- Completes and navigates `js.txt` and `css.txt` includes with `#base` support.
+- Navigates between OSGi service classes and XML, `.config`, or `.cfg.json`
+  configurations across run modes.
+- Shows configured Felix SCR property values from Java gutter icons.
+- Completes common Classic UI xtypes and xtype-specific fields with quick
+  documentation.
 
 ### AEM Toolkit tool window
 
@@ -135,7 +149,7 @@ the XML PSI API. Production code is under
 
 ## Current version
 
-`0.9.4`
+`0.10.0`
 
 ## Author
 

@@ -57,23 +57,38 @@ class HtlInspection : LocalInspectionTool() {
             }
         }
 
-        MODEL_PROPERTY.findAll(valueElement.value).forEach { match ->
+        MODEL_CHAIN.findAll(valueElement.value).forEach { match ->
             val variable = match.groupValues[1]
-            val property = match.groupValues[2]
             if (!HtlJavaModelResolver.hasDeclaration(valueElement, variable)) return@forEach
-            if (HtlJavaModelResolver.resolveProperty(valueElement, variable, property) != null) {
-                return@forEach
+            val chain = mutableListOf<String>()
+            PROPERTY_SEGMENT.findAll(match.groupValues[2]).forEach { segment ->
+                val property = segment.groupValues[1]
+                if (HtlJavaModelResolver.resolveProperty(
+                        valueElement,
+                        variable,
+                        property,
+                        chain,
+                    ) != null
+                ) {
+                    chain.add(property)
+                    return@forEach
+                }
+                val groupOffset = match.groups[2]!!.range.first
+                val range = segment.groups[1]!!.range
+                holder.registerProblem(
+                    valueElement,
+                    TextRange(
+                        groupOffset + range.first + 1,
+                        groupOffset + range.last + 2,
+                    ),
+                    "Cannot resolve '$property' on HTL model '$variable'",
+                )
             }
-            val range = match.groups[2]!!.range
-            holder.registerProblem(
-                valueElement,
-                TextRange(range.first + 1, range.last + 2),
-                "Cannot resolve '$property' on HTL model '$variable'",
-            )
         }
     }
 
     private companion object {
-        val MODEL_PROPERTY = Regex("""\$\{\s*([A-Za-z_]\w*)\.([A-Za-z_]\w*)""")
+        val MODEL_CHAIN = Regex("""\$\{\s*([A-Za-z_]\w*)((?:\.[A-Za-z_]\w*)+)""")
+        val PROPERTY_SEGMENT = Regex("""\.([A-Za-z_]\w*)""")
     }
 }

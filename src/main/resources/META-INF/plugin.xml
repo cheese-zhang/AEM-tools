@@ -26,9 +26,11 @@
     <change-notes><![CDATA[
         <h3>New Features</h3>
         <ul>
-            <li>Upload only the active .content.xml when invoked from the editor context menu.</li>
-            <li>Reserve recursive uploads for directories explicitly selected in Project View.</li>
-            <li>Show the exact upload scope before changing AEM content.</li>
+            <li>Add ClientLib category intelligence and js.txt/css.txt completion and navigation.</li>
+            <li>Complete Java Use classes, Sling Models, HTL templates, and FileVault i18n keys.</li>
+            <li>Navigate between OSGi services and run-mode configurations.</li>
+            <li>Add Classic UI xtype completion and quick documentation.</li>
+            <li>Resolve chained HTL Java properties and propagate safe renames.</li>
         </ul>
     ]]></change-notes>
 
@@ -58,6 +60,9 @@
         <projectService serviceImplementation="com.github.aemtoolkit.resolver.JcrSchemaService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.caconfig.CaConfigService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.acs.AcsCommonsService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.clientlib.AemClientLibraryService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.i18n.AemI18nService"/>
+        <projectService serviceImplementation="com.github.aemtoolkit.osgi.OsgiConfigurationService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerSettings"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemServerConnectionService"/>
         <projectService serviceImplementation="com.github.aemtoolkit.server.AemBundleService"/>
@@ -89,15 +94,36 @@
         <psi.referenceContributor
                 language="XML"
                 implementation="com.github.aemtoolkit.reference.HtlReferenceContributor"/>
+        <psi.referenceContributor
+                language="HTML"
+                implementation="com.github.aemtoolkit.reference.AemI18nReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.AemI18nReferenceContributor"/>
+        <psi.referenceContributor
+                language="HTML"
+                implementation="com.github.aemtoolkit.reference.ClientLibraryCategoryReferenceContributor"/>
+        <psi.referenceContributor
+                language="XML"
+                implementation="com.github.aemtoolkit.reference.ClientLibraryCategoryReferenceContributor"/>
+        <psi.referenceContributor
+                language="TEXT"
+                implementation="com.github.aemtoolkit.reference.ClientLibraryManifestReferenceContributor"/>
         <completion.contributor
                 language="XML"
                 implementationClass="com.github.aemtoolkit.completion.ResourceTypeCompletionContributor"/>
+        <completion.contributor
+                language="XML"
+                implementationClass="com.github.aemtoolkit.completion.ClassicUiCompletionContributor"/>
         <completion.contributor
                 language="HTML"
                 implementationClass="com.github.aemtoolkit.completion.HtlCompletionContributor"/>
         <completion.contributor
                 language="TEXT"
                 implementationClass="com.github.aemtoolkit.completion.AemConfigCompletionContributor"/>
+        <completion.contributor
+                language="TEXT"
+                implementationClass="com.github.aemtoolkit.completion.ClientLibraryManifestCompletionContributor"/>
         <completion.contributor
                 language="AEM_CONFIG"
                 implementationClass="com.github.aemtoolkit.completion.AemConfigCompletionContributor"/>
@@ -210,8 +236,16 @@
         <codeInsight.lineMarkerProvider
                 language="JAVA"
                 implementationClass="com.github.aemtoolkit.gutter.HtlJavaGetterLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.github.aemtoolkit.gutter.OsgiJavaLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="XML"
+                implementationClass="com.github.aemtoolkit.gutter.OsgiXmlLineMarkerProvider"/>
         <gotoDeclarationHandler
                 implementation="com.github.aemtoolkit.reference.HtlJavaGetterGotoDeclarationHandler"/>
+        <renamePsiElementProcessor
+                implementation="com.github.aemtoolkit.refactoring.HtlVariableRenameProcessor"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.github.aemtoolkit">

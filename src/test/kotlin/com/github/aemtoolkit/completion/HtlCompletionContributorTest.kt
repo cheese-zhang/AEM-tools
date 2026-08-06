@@ -96,4 +96,58 @@ class HtlCompletionContributorTest : BasePlatformTestCase() {
             ).map { it.name },
         )
     }
+
+    fun testExtractsDataSlyUseClassPrefix() {
+        val text = """<sly data-sly-use.model="com.example.Us"></sly>"""
+        val offset = text.indexOf("\"></sly>")
+
+        assertEquals(
+            "com.example.Us",
+            HtlCompletionContext.useClassPrefix(text, offset),
+        )
+    }
+
+    fun testExtractsDataSlyUseTemplatePrefix() {
+        val text = """<sly data-sly-use.template="./templates/ca"></sly>"""
+        val offset = text.indexOf("\"></sly>")
+
+        assertEquals(
+            "./templates/ca",
+            HtlCompletionContext.useClassPrefix(text, offset),
+        )
+    }
+
+    fun testExtractsI18nKeyPrefix() {
+        val text = """<h2>${'$'}{i18n['navigation.la']}</h2>"""
+        val offset = text.indexOf("']}")
+
+        assertEquals(
+            "navigation.la",
+            HtlCompletionContext.i18nPrefix(text, offset),
+        )
+    }
+
+    fun testExtractsStandardHtlI18nKeyPrefix() {
+        val text = """<h2>${'$'}{'navigation.la' @ i18n}</h2>"""
+        val offset = text.indexOf("' @ i18n")
+
+        assertEquals(
+            "navigation.la",
+            HtlCompletionContext.i18nPrefix(text, offset),
+        )
+    }
+
+    fun testExtractsNestedModelPropertyChain() {
+        val text = """<h2>${'$'}{userProfile.navigation.quick}</h2>"""
+        val offset = text.indexOf("}</h2>")
+
+        assertEquals(
+            HtlModelAccess(
+                variable = "userProfile",
+                propertyPrefix = "quick",
+                propertyChain = listOf("navigation"),
+            ),
+            HtlCompletionContext.modelAccess(text, offset),
+        )
+    }
 }

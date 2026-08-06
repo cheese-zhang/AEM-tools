@@ -5,6 +5,7 @@ import com.github.aemtoolkit.resolver.JcrSchemaService
 import com.github.aemtoolkit.resolver.ResourceTypeResolver
 import com.github.aemtoolkit.caconfig.CaConfigService
 import com.github.aemtoolkit.acs.AcsCommonsService
+import com.github.aemtoolkit.clientlib.AemClientLibraryService
 import com.github.aemtoolkit.util.AemXmlUtil
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
@@ -35,13 +36,17 @@ class ResourceTypeCompletionContributor : CompletionContributor() {
                     context: ProcessingContext,
                     result: CompletionResultSet,
                 ) {
-                    addAemCompletions(parameters.position, result)
+                    addAemCompletions(parameters, result)
                 }
             },
         )
     }
 
-    private fun addAemCompletions(position: PsiElement, result: CompletionResultSet) {
+    private fun addAemCompletions(
+        parameters: CompletionParameters,
+        result: CompletionResultSet,
+    ) {
+        val position = parameters.position
         val file = position.containingFile as? XmlFile ?: return
         if (!AemXmlUtil.isContentXml(file)) return
         val attribute = PsiTreeUtil.getParentOfType(position, XmlAttribute::class.java, false)
@@ -65,12 +70,40 @@ class ResourceTypeCompletionContributor : CompletionContributor() {
             addGenericLists(position, result)
             return
         }
+        if (value != null && attribute.name in CLIENT_LIBRARY_PROPERTIES) {
+            if (addClientLibraryCategories(parameters, file, position, result)) return
+        }
 
         if (value == null || !PsiTreeUtil.isAncestor(value, position, false)) {
             if (addCaConfigProperties(file, position, result)) return
             addDefinitions(position, result, JcrDefinitionKind.PROPERTY, "JCR property")
         }
 
+    }
+
+    private fun addClientLibraryCategories(
+        parameters: CompletionParameters,
+        file: XmlFile,
+        position: PsiElement,
+        result: CompletionResultSet,
+    ): Boolean {
+        val service = AemClientLibraryService.getInstance(position.project)
+        if (service.findByFile(file.virtualFile) == null) return false
+        val prefix = ClientLibraryCompletionContext.xmlArrayPrefix(
+            parameters.originalFile.text,
+            parameters.offset,
+        )
+        val categoryResult = result.withPrefixMatcher(prefix)
+        service.categories().forEach { category ->
+            categoryResult.addElement(
+                LookupElementBuilder.create(category)
+                    .withTypeText(
+                        service.findByCategory(category).firstOrNull()?.repositoryPath,
+                        true,
+                    ),
+            )
+        }
+        return true
     }
 
     private fun isGenericListAttribute(attribute: XmlAttribute): Boolean {
@@ -138,5 +171,13 @@ class ResourceTypeCompletionContributor : CompletionContributor() {
                     .withTypeText(component.componentPath, true),
             )
         }
+    }
+
+    private companion object {
+        val CLIENT_LIBRARY_PROPERTIES = setOf(
+            AemClientLibraryService.CATEGORIES,
+            AemClientLibraryService.DEPENDENCIES,
+            AemClientLibraryService.EMBED,
+        )
     }
 }
