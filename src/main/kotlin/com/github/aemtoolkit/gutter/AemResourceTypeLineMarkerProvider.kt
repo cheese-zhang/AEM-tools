@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid
 import com.intellij.openapi.vfs.VirtualFile
@@ -19,6 +19,7 @@ import com.intellij.codeInsight.daemon.GutterIconNavigationHandler
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.ui.awt.RelativePoint
+import com.intellij.util.PsiNavigateUtil
 import java.awt.event.MouseEvent
 
 /**
@@ -95,12 +96,7 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
         override fun actionPerformed(event: AnActionEvent) {
             target.navigationElement
                 .takeIf(PsiElement::isValid)
-                ?.let { element ->
-                    com.intellij.pom.Navigatable::class.java
-                        .takeIf { it.isInstance(element) }
-                        ?.cast(element)
-                        ?.navigate(true)
-                }
+                ?.let { PsiNavigateUtil.navigate(it, true) }
         }
     }
 
@@ -124,7 +120,7 @@ class AemResourceTypeLineMarkerProvider : LineMarkerProvider {
                 com.intellij.ide.projectView.ProjectView.getInstance(context.project)
                     .select(null, navigable, true)
             } else {
-                FileEditorManager.getInstance(context.project).openFile(navigable, true)
+                OpenFileDescriptor(context.project, navigable).navigate(true)
             }
         }
     }

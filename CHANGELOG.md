@@ -2,6 +2,14 @@
 
 Every release documents user-visible additions under **New Features**.
 
+## 0.10.1
+
+### Improvements
+
+- Replaced deprecated file-opening calls and an override-only navigation API
+  call in AEM Explorer and component gutter actions for newer IntelliJ IDEA
+  compatibility.
+
 ## 0.9.4
 
 ### New Features

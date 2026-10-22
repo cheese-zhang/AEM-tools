@@ -5,7 +5,7 @@ import com.github.aemtoolkit.resolver.AemComponent
 import com.github.aemtoolkit.resolver.AemRepositoryArtifact
 import com.github.aemtoolkit.resolver.AemRepositoryArtifactKind
 import com.github.aemtoolkit.resolver.ResourceTypeResolver
-import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ModalityState
@@ -83,7 +83,7 @@ class AemExplorerPanel(private val project: Project) :
             item.file
         }
         if (!target.isDirectory) {
-            FileEditorManager.getInstance(project).openFile(target, true)
+            OpenFileDescriptor(project, target).navigate(true)
         }
     }
 
